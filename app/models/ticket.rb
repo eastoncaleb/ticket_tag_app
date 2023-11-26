@@ -6,6 +6,6 @@ class Ticket < ApplicationRecord
   validate :less_than_five_tags
 
   def less_than_five_tags
-    errors.add(:tags, 'can not have more than 5 tags') if tags.count > 5
+    errors.add(:tags, 'can not have more than 5 tags') if tags.size > 5
   end
 end
