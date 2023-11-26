@@ -16,7 +16,7 @@ class TicketsController < ApplicationController
   private
 
   def ticket_params
-    params.permit(:user_id, :title, :tags)
+    params.permit(:user_id, :title)
   end
 
   def tags
