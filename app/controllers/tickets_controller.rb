@@ -1,12 +1,14 @@
 class TicketsController < ApplicationController
   def create
-    ticket = Ticket.create(ticket_params)
-    if ticket.persisted?
-      add_tags(ticket)
+    ticket = Ticket.new(ticket_params)
+    assign_tags(ticket) if tags.present?
+
+    if ticket.save
+      increment_tags_count(ticket) if tags.present?
       send_tag_webhook
       render json: { message: 'Ticket created successfully.' }, status: :created
     else
-      errors = ticket.errors || 'invalid parameters'
+      errors = ticket.errors.full_messages.to_sentence || 'invalid parameters'
       render json: { error: errors }, status: :unprocessable_entity
     end
   end
@@ -17,12 +19,19 @@ class TicketsController < ApplicationController
     params.permit(:user_id, :title, :tags)
   end
 
-  def add_tags(ticket)
-    return unless params[:tags].present?
+  def tags
+    @tags ||= params[:tags] ? params[:tags].map(&:downcase) : []
+  end
 
-    params[:tags].each do |tag_name|
-      tag = Tag.find_or_create_by(name: tag_name.downcase)
+  def assign_tags(ticket)
+    tags.each do |tag_name|
+      tag = Tag.find_or_create_by(name: tag_name)
       ticket.tags << tag unless ticket.tags.include?(tag)
+    end
+  end
+
+  def increment_tags_count(ticket)
+    ticket.tags.each do |tag|
       tag.increment!(:count)
     end
   end
