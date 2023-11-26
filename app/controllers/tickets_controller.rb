@@ -1,10 +1,9 @@
 class TicketsController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
   def create
     ticket = Ticket.create(ticket_params)
     if ticket.persisted?
       add_tags(ticket)
+      send_tag_webhook
       render json: { message: 'Ticket created successfully.' }, status: :created
     else
       errors = ticket.errors || 'invalid parameters'
@@ -28,7 +27,8 @@ class TicketsController < ApplicationController
     end
   end
 
-  # implement this
   def send_tag_webhook
+    highest_count_tag = Tag.highest_count_tag
+    WebhookSender.send_tag_webhook(highest_count_tag)
   end
 end
