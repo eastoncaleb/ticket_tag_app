@@ -62,6 +62,10 @@ Create a new ticket with user ID, title, and tags.
 }
 ```
 
+## Webhook Request
+
+You can check that the webhook request was sent successfully by visiting <https://webhook.site/be8c40d5-653f-492b-a1b2-86efee0449bd>.
+
 ## Testing
 
 Run the test suite to ensure that everything is working correctly:
