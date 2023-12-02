@@ -31,3 +31,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Misc
+.DS_Store
+app/.DS_Store
